@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Welcome to Water Shop</h1>
+        <nav>
+            <ul>
+                <li><a href="login.html">Login</a></li>
+                <li><a href="registration.html">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="registration-form">
+            <h2>Register</h2>
+            <form method="POST" action="{% url 'register_user' %}">
+                {% csrf_token %}
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" required><br>
+            
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required><br>
+            
+                <!-- Add other registration fields such as email, address, and phone_number -->
+            
+                <button type="submit">Register</button>
+            </form>
+            
+        </section>
+    </main>
+
+    <!-- Include this script in your HTML templates -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the registration form
+        const registrationForm = document.querySelector('#registration-form');
+        if (registrationForm) {
+            registrationForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const formData = new FormData(registrationForm);
+                try {
+                    const response = await fetch('{% url "register_user" %}', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (response.status === 201) {
+                        // Registration successful, you can redirect to a success page
+                        window.location.href = '/registration-success/';
+                    } else {
+                        const data = await response.json();
+                        // Handle registration errors and display them to the user
+                        console.error(data);
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        // Get the login form
+        const loginForm = document.querySelector('#login-form');
+        if (loginForm) {
+            loginForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                const formData = new FormData(loginForm);
+                try {
+                    const response = await fetch('{% url "login" %}', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    if (response.status === 200) {
+                        // Login successful, you can redirect to the user dashboard
+                        window.location.href = '/user-dashboard/';
+                    } else {
+                        const data = await response.json();
+                        // Handle login errors and display them to the user
+                        console.error(data);
+                    }
+                } catch (error) {
+                    console.error(error);
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>
